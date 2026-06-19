@@ -16,7 +16,8 @@
                     <th>No Pelanggan</th>
                     <th>Nama</th>
                     <th>No HP</th>
-                    <th>Alamat</th>
+                    <th>Perumahan</th>
+                    <th>Blok</th>
                     <th>Golongan Tarif</th>
                     <th>Status</th>
                     <th>Aksi</th>
@@ -28,7 +29,8 @@
                     <td style="font-weight: 500;">{{ $p->no_pelanggan }}</td>
                     <td>{{ $p->nama }}</td>
                     <td>{{ $p->no_telp ?? '-' }}</td>
-                    <td>{{ $p->alamat }}</td>
+                    <td>{{ $p->perumahan ?? '-' }}</td>
+                    <td>{{ $p->blok ?? '-' }}</td>
                     <td>{{ $p->tarifAir->golongan ?? '-' }} ({{ $p->tarifAir->kode ?? '-' }})</td>
                     <td>
                         @if($p->status == 'aktif')
@@ -53,7 +55,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-muted);">Belum ada data pelanggan terdaftar.</td>
+                    <td colspan="8" style="text-align: center; padding: 24px; color: var(--text-muted);">Belum ada data pelanggan terdaftar.</td>
                 </tr>
                 @endforelse
             </tbody>

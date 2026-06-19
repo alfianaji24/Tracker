@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pelanggan extends Model
 {
-    protected $fillable = ['no_pelanggan', 'nama', 'alamat', 'no_telp', 'tarif_air_id', 'status', 'meter_terakhir'];
+    protected $fillable = ['no_pelanggan', 'nama', 'perumahan', 'blok', 'no_telp', 'tarif_air_id', 'status', 'meter_terakhir'];
 
     public function tarifAir()
     {

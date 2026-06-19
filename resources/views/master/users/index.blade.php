@@ -1,66 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="padding: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 style="font-size: 24px; font-weight: 700;">Users</h2>
-        <a href="{{ route('master.users.create') }}" style="background: var(--primary); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px;">
-            + Tambah User
-        </a>
-    </div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h2 style="font-size: 24px; font-weight: 700;">Users</h2>
+    <a href="{{ route('master.users.create') }}" style="background: var(--primary); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px;">
+        + Tambah User
+    </a>
+</div>
 
-    @if(session('success'))
-    <div style="background: #dcfce7; color: #166534; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #22c55e;">
-        {{ session('success') }}
-    </div>
-    @endif
+@if(session('success'))
+<div style="background: #dcfce7; color: #166534; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #22c55e;">
+    {{ session('success') }}
+</div>
+@endif
 
-    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background: #f3f4f6; border-bottom: 1px solid #e5e7eb;">
-                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">ID</th>
-                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Nama</th>
-                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Email</th>
-                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Role</th>
-                    <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Status</th>
-                    <th style="padding: 12px 16px; text-align: center; font-weight: 600; color: #374151;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
-                <tr style="border-bottom: 1px solid #e5e7eb;">
-                    <td style="padding: 12px 16px; color: #6b7280;">{{ $user->id }}</td>
-                    <td style="padding: 12px 16px; color: #374151; font-weight: 500;">{{ $user->name }}</td>
-                    <td style="padding: 12px 16px; color: #6b7280;">{{ $user->email }}</td>
-                    <td style="padding: 12px 16px;">
-                        <span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 13px;">
-                            {{ $user->role->name ?? '-' }}
-                        </span>
-                    </td>
-                    <td style="padding: 12px 16px;">
-                        @if($user->is_active)
-                        <span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 13px;">Aktif</span>
-                        @else
-                        <span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 13px;">Nonaktif</span>
-                        @endif
-                    </td>
-                    <td style="padding: 12px 16px; text-align: center;">
-                        <a href="{{ route('master.users.edit', $user) }}" style="color: #3b82f6; text-decoration: none; font-size: 14px; margin-right: 12px;">Edit</a>
-                        <form method="POST" action="{{ route('master.users.destroy', $user) }}" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" style="color: #ef4444; background: none; border: none; cursor: pointer; font-size: 14px;">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" style="padding: 24px; text-align: center; color: #9ca3af;">Tidak ada data user.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+<div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #f3f4f6; border-bottom: 1px solid #e5e7eb;">
+                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">ID</th>
+                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Nama</th>
+                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Email</th>
+                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Role</th>
+                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: #374151;">Status</th>
+                <th style="padding: 12px 16px; text-align: center; font-weight: 600; color: #374151;">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($users as $user)
+            <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 12px 16px; color: #6b7280;">{{ $user->id }}</td>
+                <td style="padding: 12px 16px; color: #374151; font-weight: 500;">{{ $user->name }}</td>
+                <td style="padding: 12px 16px; color: #6b7280;">{{ $user->email }}</td>
+                <td style="padding: 12px 16px;">
+                    <span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 13px;">
+                        {{ $user->role->name ?? '-' }}
+                    </span>
+                </td>
+                <td style="padding: 12px 16px;">
+                    @if($user->is_active)
+                    <span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 13px;">Aktif</span>
+                    @else
+                    <span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 13px;">Nonaktif</span>
+                    @endif
+                </td>
+                <td style="padding: 12px 16px; text-align: center;">
+                    <a href="{{ route('master.users.edit', $user) }}" style="color: #3b82f6; text-decoration: none; font-size: 14px; margin-right: 12px;">Edit</a>
+                    <form method="POST" action="{{ route('master.users.destroy', $user) }}" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" style="color: #ef4444; background: none; border: none; cursor: pointer; font-size: 14px;">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="6" style="padding: 24px; text-align: center; color: #9ca3af;">Tidak ada data user.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection

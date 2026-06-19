@@ -2,7 +2,6 @@
 
 @section('content')
 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-    <a href="{{ route('billings.index') }}" class="btn btn-primary btn-sm" style="background: var(--body-bg); color: var(--text-main);"><i class='bx bx-arrow-back'></i> Kembali</a>
     <h2 class="page-title" style="margin-bottom: 0;">Update Status Tagihan</h2>
 </div>
 
@@ -30,8 +29,20 @@
             <div style="color: var(--text-muted);">Pemakaian</div>
             <div style="font-weight: 500;">{{ $billing->pemakaian }} m³</div>
 
-            <div style="color: var(--text-muted); margin-top: 8px;">Total Tagihan</div>
-            <div style="font-weight: 700; font-size: 18px; color: var(--primary); margin-top: 8px;">Rp {{ number_format($billing->total_tagihan, 0, ',', '.') }}</div>
+            <div style="color: var(--text-muted);">Tagihan Air</div>
+            <div style="font-weight: 500;">Rp <span id="tagihan_air_display">{{ number_format($billing->tagihan_air, 0, ',', '.') }}</span></div>
+
+            <div style="color: var(--text-muted);">Abonemen</div>
+            <div style="font-weight: 500;">Rp <span id="abonemen_display">{{ number_format($billing->abonemen, 0, ',', '.') }}</span></div>
+
+            <div style="color: var(--text-muted);">Subtotal</div>
+            <div style="font-weight: 600;">Rp <span id="subtotal_display">{{ number_format($billing->tagihan_air + $billing->abonemen, 0, ',', '.') }}</span></div>
+
+            <div style="color: var(--text-muted);">Diskon</div>
+            <div style="font-weight: 500; color: #ef4444;">- Rp <span id="diskon_display">{{ number_format($billing->diskon ?? 0, 0, ',', '.') }}</span></div>
+
+            <div style="color: var(--text-muted); padding-top: 12px; border-top: 2px solid #e5e7eb; margin-top: 12px;">Total Tagihan</div>
+            <div style="font-weight: 700; font-size: 18px; color: var(--primary); padding-top: 12px; border-top: 2px solid #e5e7eb; margin-top: 12px;">Rp <span id="total_display">{{ number_format($billing->total_tagihan - ($billing->diskon ?? 0), 0, ',', '.') }}</span></div>
         </div>
     </div>
 
@@ -48,9 +59,52 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label class="form-label">Diskon (Opsional)</label>
+            <input type="number" name="diskon" class="form-control" placeholder="Masukkan jumlah diskon dalam Rp" min="0" step="any" value="{{ $billing->diskon ?? 0 }}">
+            <small style="color: #999; display: block; margin-top: 6px;">Opsional - bisa diisi tentatif</small>
+        </div>
+
         <div style="margin-top: 24px; text-align: right;">
-            <button type="submit" class="btn btn-primary">Simpan Status</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </div>
     </form>
 </div>
+
+<script>
+    // Data awal dari database
+    const tagihanAir = {
+        {
+            $billing - > tagihan_air
+        }
+    };
+    const abonemen = {
+        {
+            $billing - > abonemen
+        }
+    };
+    const subtotal = tagihanAir + abonemen;
+    const diskonInput = document.querySelector('input[name="diskon"]');
+
+    function formatCurrency(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function updateCalculation() {
+        const diskon = parseInt(diskonInput.value) || 0;
+        const totalSetelahDiskon = Math.max(0, subtotal - diskon);
+
+        // Update display
+        document.getElementById('subtotal_display').textContent = formatCurrency(subtotal);
+        document.getElementById('diskon_display').textContent = formatCurrency(diskon);
+        document.getElementById('total_display').textContent = formatCurrency(totalSetelahDiskon);
+    }
+
+    // Event listener untuk perubahan diskon
+    diskonInput.addEventListener('input', updateCalculation);
+    diskonInput.addEventListener('change', updateCalculation);
+
+    // Initialize saat page load
+    document.addEventListener('DOMContentLoaded', updateCalculation);
+</script>
 @endsection

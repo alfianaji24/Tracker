@@ -10,7 +10,7 @@ class BillingController extends Controller
 {
     public function index()
     {
-        $billings = Billing::with('pelanggan.tarifAir')->latest()->get();
+        $billings = Billing::with('pelanggan.tarifAir')->orderBy('periode', 'desc')->get();
         $pelanggans = Pelanggan::where('status', 'aktif')->get();
         return view('billings.index', compact('billings', 'pelanggans'));
     }
@@ -90,13 +90,15 @@ class BillingController extends Controller
     {
         $request->validate([
             'status_pembayaran' => 'required|in:belum_lunas,lunas,batal',
+            'diskon' => 'nullable|numeric|min:0',
         ]);
 
         $billing->update([
-            'status_pembayaran' => $request->status_pembayaran
+            'status_pembayaran' => $request->status_pembayaran,
+            'diskon' => $request->diskon ?? 0
         ]);
 
-        return redirect()->route('billings.index')->with('success', 'Status tagihan diperbarui.');
+        return redirect()->route('billings.index')->with('success', 'Tagihan berhasil diperbarui.');
     }
 
     public function destroy(Billing $billing)

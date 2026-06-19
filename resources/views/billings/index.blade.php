@@ -47,7 +47,12 @@
                         {{ $b->pemakaian }} m³<br>
                         <small style="color: var(--text-muted);">({{ $b->meter_awal }} - {{ $b->meter_akhir }})</small>
                     </td>
-                    <td style="font-weight: 600;">Rp {{ number_format($b->total_tagihan, 0, ',', '.') }}</td>
+                    <td style="font-weight: 600;">
+                        Rp {{ number_format($b->total_tagihan, 0, ',', '.') }}
+                        @if($b->diskon > 0)
+                        <br><small style="color: #10B981;">✓ Diskon: Rp {{ number_format($b->diskon, 0, ',', '.') }}</small>
+                        @endif
+                    </td>
                     <td>
                         @if($b->status_pembayaran == 'lunas')
                         <span class="badge badge-success">Lunas</span>

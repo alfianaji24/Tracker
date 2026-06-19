@@ -2,7 +2,6 @@
 
 @section('content')
 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-    <a href="{{ route('master.tarif-air.index') }}" class="btn btn-primary btn-sm" style="background: var(--body-bg); color: var(--text-main);"><i class='bx bx-arrow-back'></i> Kembali</a>
     <h2 class="page-title" style="margin-bottom: 0;">Tambah Tarif Air</h2>
 </div>
 

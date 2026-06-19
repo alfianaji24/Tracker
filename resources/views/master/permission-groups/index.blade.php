@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="padding: 24px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h2 style="font-size: 24px; font-weight: 700;">Permission Groups</h2>
         <a href="{{ route('master.permission-groups.create') }}" style="background: var(--primary); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px;">
@@ -54,5 +53,4 @@
             </tbody>
         </table>
     </div>
-</div>
 @endsection

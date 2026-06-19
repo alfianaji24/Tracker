@@ -170,6 +170,9 @@
                     const invoiceResponse = await fetch(`/api/billings/generate-invoice`);
                     const invoiceData = await invoiceResponse.json();
                     document.getElementById('swacam_no_invoice').value = invoiceData.no_invoice;
+
+                    // Reload submission history for selected pelanggan
+                    loadSubmissionHistory();
                 } catch (error) {
                     console.error('Error:', error);
                 }
@@ -371,9 +374,15 @@
 
         async function loadSubmissionHistory() {
             const container = document.getElementById('historyContainer');
+            const pelangganId = document.getElementById('swacam_pelanggan').value;
 
             try {
-                const response = await fetch('{{ route("swacam.history") }}');
+                let url = '{{ route("swacam.history") }}';
+                if (pelangganId) {
+                    url += `?pelanggan_id=${pelangganId}`;
+                }
+
+                const response = await fetch(url);
                 const submissions = await response.json();
 
                 if (!submissions.length) {
@@ -450,13 +459,19 @@
 
         async function loadPhotoArchive() {
             const container = document.getElementById('archiveContainer');
+            const pelangganId = document.getElementById('swacam_pelanggan').value;
+
+            if (!pelangganId) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">Pilih pelanggan terlebih dahulu</p>';
+                return;
+            }
 
             try {
-                const response = await fetch('{{ route("swacam.archive") }}');
+                const response = await fetch(`{{ route("swacam.archive") }}?pelanggan_id=${pelangganId}`);
                 const submissions = await response.json();
 
                 if (!submissions.filter(s => s.photo_path).length) {
-                    container.innerHTML = '<p style="text-align: center; color: #999;">Tidak ada foto tersimpan</p>';
+                    container.innerHTML = '<p style="text-align: center; color: #999;">Tidak ada foto tersimpan untuk pelanggan ini</p>';
                     return;
                 }
 
@@ -467,7 +482,7 @@
                         <div style="position: relative; border-radius: 8px; overflow: hidden; cursor: pointer;" onclick="viewPhoto('${sub.photo_path}')">
                             <img src="${sub.photo_path}" style="width: 100%; height: 120px; object-fit: cover; background: #f0f0f0;">
                             <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 4px; font-size: 10px;">
-                                ${sub.pelanggan.nama.substring(0, 10)}...
+                                ${sub.no_invoice}
                             </div>
                         </div>
                     `;
@@ -485,4 +500,6 @@
             showModal('photoViewerModal');
         }
     </script>
+
+
     @endsection

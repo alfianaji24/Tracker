@@ -15,6 +15,7 @@ class Billing extends Model
         'pemakaian',
         'tagihan_air',
         'abonemen',
+        'diskon',
         'total_tagihan',
         'status_pembayaran',
         'tanggal_bayar'

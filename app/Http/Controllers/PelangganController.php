@@ -30,7 +30,8 @@ class PelangganController extends Controller
         $request->validate([
             'no_pelanggan' => 'required|unique:pelanggans',
             'nama' => 'required',
-            'alamat' => 'required',
+            'perumahan' => 'nullable',
+            'blok' => 'nullable',
             'tarif_air_id' => 'required|exists:tarif_airs,id',
             'status' => 'required|in:aktif,nonaktif',
         ]);
@@ -50,7 +51,8 @@ class PelangganController extends Controller
         $request->validate([
             'no_pelanggan' => 'required|unique:pelanggans,no_pelanggan,' . $pelanggan->id,
             'nama' => 'required',
-            'alamat' => 'required',
+            'perumahan' => 'nullable',
+            'blok' => 'nullable',
             'tarif_air_id' => 'required|exists:tarif_airs,id',
             'status' => 'required|in:aktif,nonaktif',
         ]);

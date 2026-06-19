@@ -62,61 +62,101 @@ function initDashboardCharts(data) {
 
     // Chart Pemakaian Per Bulan
     if (document.getElementById('chartPemakaianBulanan')) {
-        const ctxPemakaian = document.getElementById('chartPemakaianBulanan').getContext('2d');
-        new Chart(ctxPemakaian, {
-            type: 'line',
-            data: {
-                labels: data.pemakaianLabels,
-                datasets: [{
-                    label: 'Pemakaian Air (m³)',
-                    data: data.pemakaianBulan,
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#667eea',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: {
-                            font: { size: 13 },
-                            usePointStyle: true,
-                            padding: 20
-                        }
+    const ctxPemakaian = document.getElementById('chartPemakaianBulanan').getContext('2d');
+
+    // Hitung max value dan tentukan stepSize otomatis
+    const maxValue = Math.max(...data.pemakaianBulan, 1);
+    let stepSize = 1;
+
+    if (maxValue <= 10) {
+        stepSize = 1;
+    } else if (maxValue <= 50) {
+        stepSize = 5;
+    } else if (maxValue <= 100) {
+        stepSize = 10;
+    } else if (maxValue <= 500) {
+        stepSize = 50;
+    } else if (maxValue <= 1000) {
+        stepSize = 100;
+    } else if (maxValue <= 5000) {
+        stepSize = 500;
+    } else {
+        stepSize = 1000;
+    }
+
+    new Chart(ctxPemakaian, {
+        type: 'line',
+        data: {
+            labels: data.pemakaianLabels,
+            datasets: [{
+                label: 'Pemakaian Air (m³)',
+                data: data.pemakaianBulan,
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 6,
+                pointBackgroundColor: '#667eea',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        font: { size: 13 },
+                        usePointStyle: true,
+                        padding: 20
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            font: { size: 12 }
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            font: { size: 12 }
-                        },
-                        grid: {
-                            display: false
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = 'Pemakaian: ';
+                            if (context.parsed.y !== null) {
+                                // Menampilkan angka asli (bisa desimal jika inputnya desimal, misal 2.4 m³)
+                                label += context.parsed.y + ' m³';
+                            }
+                            return label;
                         }
                     }
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { size: 12 },
+                        stepSize: stepSize,
+                        callback: function(value) {
+                            // Hanya tampilkan jika nilai tersebut adalah kelipatan stepSize
+                            if (value % stepSize === 0) {
+                                return value + ' m³';
+                            }
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 12 }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
             }
-        });
-    }
+        }
+    });
+}
 }
 
 // Auto-initialize when DOM is ready

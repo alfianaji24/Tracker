@@ -33,9 +33,15 @@
             <input type="text" name="no_telp" class="form-control" value="{{ old('no_telp') }}">
         </div>
 
-        <div class="form-group">
-            <label class="form-label">Alamat Lengkap</label>
-            <textarea name="alamat" class="form-control" rows="3" required>{{ old('alamat') }}</textarea>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label class="form-label">Perumahan (Misal: Kota Cakra)</label>
+                <input type="text" name="perumahan" class="form-control" value="{{ old('perumahan') }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Blok / No Rumah</label>
+                <input type="text" name="blok" class="form-control" value="{{ old('blok') }}">
+            </div>
         </div>
 
         <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">

@@ -141,6 +141,7 @@
     function showModal(modalId) {
         document.getElementById(modalId).style.display = 'flex';
     }
+
     function hideModal(modalId) {
         document.getElementById(modalId).style.display = 'none';
     }
@@ -151,7 +152,7 @@
         document.getElementById('openSwacamBtn').addEventListener('click', () => showModal('swacamModal'));
         document.getElementById('closeSwacamBtn').addEventListener('click', () => hideModal('swacamModal'));
         document.getElementById('closePhotoViewerBtn').addEventListener('click', () => hideModal('photoViewerModal'));
-        
+
         // Close modal on outside click
         document.getElementById('swacamModal').addEventListener('click', function(e) {
             if (e.target === this) hideModal('swacamModal');
@@ -243,7 +244,7 @@
             btn.addEventListener('click', function() {
                 const tabName = this.getAttribute('data-tab');
                 switchTab(tabName);
-                
+
                 // Load data when switching to history or archive
                 if (tabName === 'tab-history') loadSubmissionHistory();
                 if (tabName === 'tab-archive') loadPhotoArchive();
@@ -258,21 +259,21 @@
             pane.style.display = 'none';
             pane.classList.remove('active');
         });
-        
+
         // Reset all tab buttons
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
             btn.style.borderBottomColor = 'transparent';
             btn.style.color = '#8A99AF';
         });
-        
+
         // Show selected tab
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
             selectedTab.style.display = 'block';
             selectedTab.classList.add('active');
         }
-        
+
         // Highlight selected button
         const selectedBtn = document.querySelector(`[data-tab="${tabName}"]`);
         if (selectedBtn) {

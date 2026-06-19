@@ -96,14 +96,22 @@ class SwacamController extends Controller
     /**
      * Get submission history (from billings created by OCR)
      */
-    public function history()
+    public function history(Request $request)
     {
         try {
-            $submissions = Billing::with('pelanggan')
+            $pelangganId = $request->input('pelanggan_id');
+
+            $query = Billing::with('pelanggan')
                 ->where('source', 'ocr')
                 ->latest('created_at')
-                ->limit(50)
-                ->get()
+                ->limit(50);
+
+            // Filter by pelanggan if provided
+            if ($pelangganId) {
+                $query->where('pelanggan_id', $pelangganId);
+            }
+
+            $submissions = $query->get()
                 ->map(function ($billing) {
                     return [
                         'id' => $billing->id,
@@ -134,38 +142,42 @@ class SwacamController extends Controller
             ], 500);
         }
     }
-}
-
-            return response()->json($submissions);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
 
     /**
-     * Get photo archive
+     * Get photo archive (from billings created by OCR with photos)
      */
-    public function archive()
+    public function archive(Request $request)
     {
         try {
-            $submissions = SwacamSubmission::with('pelanggan')
-                ->where('photo_path', '!=', null)
-                ->latest('submitted_at')
-                ->limit(100)
-                ->get()
-                ->map(function ($sub) {
+            $pelangganId = $request->input('pelanggan_id');
+
+            $query = Billing::with('pelanggan')
+                ->where('source', 'ocr')
+                ->whereNotNull('photo_path')
+                ->latest('created_at')
+                ->limit(100);
+
+            // Filter by pelanggan if provided
+            if ($pelangganId) {
+                $query->where('pelanggan_id', $pelangganId);
+            }
+
+            $submissions = $query->get()
+                ->map(function ($billing) {
                     return [
-                        'id' => $sub->id,
+                        'id' => $billing->id,
                         'pelanggan' => [
-                            'id' => $sub->pelanggan->id,
-                            'nama' => $sub->pelanggan->nama,
-                            'no_pelanggan' => $sub->pelanggan->no_pelanggan,
+                            'id' => $billing->pelanggan->id,
+                            'nama' => $billing->pelanggan->nama,
+                            'no_pelanggan' => $billing->pelanggan->no_pelanggan,
                         ],
-                        'meter_reading' => $sub->meter_reading,
-                        'pemakaian' => $sub->pemakaian,
-                        'photo_path' => $sub->photo_path,
-                        'photo_quality' => $sub->photo_quality,
-                        'submitted_at' => $sub->submitted_at,
+                        'no_invoice' => $billing->no_invoice,
+                        'meter_awal' => $billing->meter_awal,
+                        'meter_akhir' => $billing->meter_akhir,
+                        'pemakaian' => $billing->pemakaian,
+                        'photo_path' => $billing->photo_path ? asset('storage/' . $billing->photo_path) : null,
+                        'photo_quality' => $billing->photo_quality,
+                        'created_at' => $billing->created_at,
                     ];
                 });
 
@@ -173,36 +185,5 @@ class SwacamController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    }
-
-    /**
-     * Approve submission (admin)
-     */
-    public function approve($id, Request $request)
-    {
-        $submission = SwacamSubmission::findOrFail($id);
-
-        $submission->update([
-            'status' => 'approved',
-            'approved_at' => now(),
-            'admin_notes' => $request->input('admin_notes'),
-        ]);
-
-        return response()->json(['success' => true, 'message' => 'Submission approved']);
-    }
-
-    /**
-     * Reject submission (admin)
-     */
-    public function reject($id, Request $request)
-    {
-        $submission = SwacamSubmission::findOrFail($id);
-
-        $submission->update([
-            'status' => 'rejected',
-            'admin_notes' => $request->input('admin_notes'),
-        ]);
-
-        return response()->json(['success' => true, 'message' => 'Submission rejected']);
     }
 }
